@@ -1,0 +1,127 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html ng-app="venda">
+    <head>
+        <meta charset="utf-8">
+        <title>Comercio</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'main/css/pure-min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    </head>
+    
+    <body ng-controller="venda-simples as vendaSimples">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="{% url 'home' %}" class="pure-menu-link"><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
+            </ul>
+            <a href="{% url 'venda' %}" class="pure-menu-heading pure-menu-link">Venda</a>
+        </div>
+        <br>
+        <main class="container">
+			{% verbatim %}
+            <div class="pure-g">
+                <div class="pure-u-3-5">
+                    
+                    
+                    <div class="">
+                        <div class="pure-g l-box" ng-repeat="item in vendaSimples.List">
+                            <div class="pure-u-3-5">
+                                {{item.descricao}}
+                            </div>
+                            <div class="pure-u-2-5">
+                                <form class="pure-form">
+                                    <input type="number" ng-model="item.quantidade" value="1" min="1" style="width: 75px">
+                                    <button class="pure-button button-warning" ng-click="vendaSimples.remove($index)"><i class="fa fa-trash"></i></button>
+                                    <span class="text-right">R$ {{item.precoVenda * item.quantidade | number:2}}</span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="pure-u-2-5">
+                    <div class="panel l-box">
+                        <center><small><strong>Pacial</strong></small>
+                        <h1>R$ {{vendaSimples.getParcials() | number:2}}</h1></center>
+                    </div>
+                    <div>
+                        <form class="pure-form">
+                            <textarea placeholder="Observações" class="full-width" ng-model="vendaSimples.obs"></textarea>
+                        </form>
+                    </div>
+                    <br>
+                    <div>
+                        <button class="pure-button button-success float-right" ng-click="vendaSimples.openModal()">Finalizar</button>&nbsp;
+                        <button class="pure-button button-error float-right" ng-click="vendaSimples.cancel()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="pure-g">
+                    <div class="pure-u-1">
+                        <form class="pure-form">
+                            <fieldset>
+                                <legend>Adicionar Item</legend>
+
+                                <input type="text" class="full-width" placeholder="Buscar" ng-model="buscaBox">
+                                <br>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="pure-u-1">
+                        <div class="pure-g l-box" ng-repeat="item in vendaSimples.sugest">
+                         <div class="pure-u-4-5">
+                                {{item.descricao}} | R$ {{item.precoVenda | number: 2}}<br>
+                                Quantidade em estoque: {{item.quantidade}}
+                            </div>
+                            <div class="pure-u-1-5">
+                                <button class="pure-button button-success float-right" ng-click="vendaSimples.adicionar(item)"><i class="fa fa-plus"></i></button>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+			
+
+
+            <div class="modal hidden-{{vendaSimples.hidden}}">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" ng-click="vendaSimples.closeModal()">x</span>
+                    {% endverbatim %}
+                    <form class="pure-form pure-form-stacked" action="{% url 'venda' %}" method="POST">
+					{% csrf_token %}
+					{% verbatim %}
+                        <fieldset>
+						
+                            <legend>Finalizar compra</legend>
+                            
+                            <label for="avista"><input type="radio" ng-model="vendaSimples.pagamento" value="avista" id="avista"> À Vista</label>
+                            <label for="cartao"><input type="radio" ng-model="vendaSimples.pagamento" value="cartao" id="cartao"> Cartão</label>
+                            <label for="vale"><input type="radio" ng-model="vendaSimples.pagamento" value="vale" id="vale"> Vale</label>
+                            
+                            
+                            <div ng-switch="vendaSimples.pagamento">
+                                <div ng-switch-when="avista">
+                                    <input type="number" ng-model="vendaSimples.dinheiroRecebido" placeholder="R$ Dinheiro Recebido" min="0" step="0.01"><br>
+                                    Troco: R$ {{vendaSimples.dinheiroRecebido - vendaSimples.getParcials() | number:2}}
+                                </div>
+                            </div>
+                            
+                            <br>
+                            <button type="button" class="pure-button button-success" ng-click="vendaSimples.finzalizar()"><i class="fa fa-check"></i> Finalizar</button>
+                        
+						</fieldset>
+                    </form>
+                </div>
+            </div>
+            
+        </main>
+        {% endverbatim %}
+        <script src="{% static 'main/lib/angular.min.js' %}"></script>
+        <script src="{% static 'main/js/venda.js' %}"></script>
+	<body>
+
+</html>

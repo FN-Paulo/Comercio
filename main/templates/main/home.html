@@ -1,0 +1,31 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html >
+    <head>
+        <meta charset="utf-8">
+        <title>Comercio</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'main/css/pure-min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    </head>
+	<body>
+        <div class="pure-menu pure-menu-horizontal">
+            <a href="{% url 'home'%}" class="pure-menu-heading pure-menu-link">Comercio</a>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="{% url 'venda' %}" class="pure-menu-link">Venda</a></li>
+                <li class="pure-menu-item"><a href="{% url 'estoque' %}" class="pure-menu-link">Estoque</a></li>
+            </ul>
+        </div>
+        <br>
+        <main class="container">
+           
+           <aside class="float-b" ng-app="clock">
+                <ng-clock></ng-clock>
+            </aside>
+        </main>
+        <script src="{% static 'main/lib/angular.min.js' %}"></script>
+        <script src="{% static 'main/js/index.js' %}"></script>
+	<body>
+
+</html>

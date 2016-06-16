@@ -1,0 +1,133 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html ng-app="estoque">
+    <head>
+        <meta charset="utf-8">
+        <title>Comercio | Estoque</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'main/css/pure-min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    </head>
+    
+    <body ng-controller="estoqueController as self">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="{% url 'home' %}" class="pure-menu-link"><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
+            </ul>
+            <a href="{% url 'estoque' %}" class="pure-menu-heading pure-menu-link">Estoque</a>
+			
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link" ng-click="self.openModal()"><i class="fa fa-plus" aria-hidden="true"></i> Adicionar item</a></li>
+            </ul>
+        </div>
+        <br>
+        <main class="container">
+			 {% if editar_item %}
+					<form class="pure-form pure-form-stacked" action="{% url 'estoque' %}" method="POST">
+					{% csrf_token %}
+						<fieldset>
+						<legend>Editar Item</legend>
+                            <input type="hidden" name="_id" value="{{ produto.id }}">
+
+                            <label for="descricao">Descrição</label>
+                            <input id="descricao" class="full-width" type="text" name="descricao" placeholder="Descrição" required value="{{ produto.descricao }}">
+
+                            <label for="quantidade">Quantidade</label>
+                            <input id="quantidade" class="full-width" type="number" name="quantidade" min="0" placeholder="Quantidade" required value="{{ produto.quantidade }}">
+
+                            <label for="precoCompra">Preço de compra (R$)</label>
+                            <input id="precoCompra" class="full-width" type="number" name="precoCompra" min="0" step="0.10" placeholder="R$" required value="{{ produto.preco_compra }}">
+
+                            <label for="precoVenda">Preço de venda (R$)</label>
+                            <input id="precoVenda" class="full-width" type="number" name="precoVenda" min="0" step="0.10" placeholder="R$" required value="{{ produto.preco_venda }}">
+
+                            <button type="submit" class="pure-button button-warning" name="editarItem"><i class="fa fa-pencil"></i> Editar</button>
+                        </fieldset>
+                    </form>
+                {% endif %}
+            
+            
+            
+            <table class="pure-table pure-table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Quantidade</th>
+                        <th>Preço de Compra</th>
+                        <th>Preço de Venda</th>
+                        <th>Editar</th>
+                        <th>Apagar</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                     
+						{% for produto in estoque %}
+						<tr>
+						<td {{produto.gettdtag}}>{{produto.id}}</td>
+						<td {{produto.gettdtag}}>{{produto.descricao}}</td>
+						<td {{produto.gettdtag}}>{{produto.quantidade}}</td>
+						<td {{produto.gettdtag}}>{{produto.getpreco_compra}}</td>
+						<td {{produto.gettdtag}}>{{produto.getpreco_venda}}</td>
+						<td {{produto.gettdtag}}><a href="?editar={{produto.id}}" class="pure-button button-warning edit"><i class="fa fa-pencil"></i></a></td>
+						<td {{produto.gettdtag}}><a href="?apagar={{produto.id}}" class="pure-button button-error"><i class="fa fa-trash"></i></a></td>
+						{% endfor %}
+                            
+						
+                    
+                </tbody>
+            </table>
+			
+				<div class="pagination">
+    <span class="step-links">
+        {% if estoque.has_previous %}
+            <a href="?page={{ estoque.previous_page_number }}">&laquo;</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ estoque.number }} de {{ estoque.paginator.num_pages }}.
+        </span>
+
+        {% if estoque.has_next %}
+            <a href="?page={{ estoque.next_page_number }}">&raquo;</a>
+        {% endif %}
+    </span>
+</div>
+            {% verbatim %}
+            <div class="modal hidden-{{self.hidden}}">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" ng-click="self.closeModal()">x</span>
+                    {% endverbatim %}
+                    <form class="pure-form pure-form-stacked" action="{% url 'estoque' %}" method="POST">
+					{% csrf_token %}
+					
+                        <fieldset>
+                            <legend>Adicionar Item</legend>
+
+                            <label for="descricao">Descrição</label>
+                            <input id="descricao" class="full-width" type="text" name="descricao" placeholder="Descrição" required>
+                               
+                            <label for="quantidade">Quantidade</label>
+                            <input id="quantidade" class="full-width" type="number" name="quantidade" min="0" placeholder="Quantidade" required>
+                            
+                            <label for="precoCompra">Preço de compra (R$)</label>
+                            <input id="precoCompra" class="full-width" type="number" name="precoCompra" min="0" step="0.01" placeholder="R$" required>
+                            
+                            <label for="precoVenda">Preço de venda (R$)</label>
+                            <input id="precoVenda" class="full-width" type="number" name="precoVenda" min="0" step="0.01" placeholder="R$" required>
+
+                            <button type="submit" class="pure-button pure-button-primary" name="addItem"><i class="fa fa-plus"></i> Inserir</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </main>
+		
+        <script src="{% static 'main/lib/angular.min.js' %}"></script>
+        <script src="{% static 'main/js/estoque.js' %}"></script>
+	<body>
+</html>
