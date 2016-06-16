@@ -70,8 +70,8 @@
 						<td {{produto.gettdtag}}>{{produto.id}}</td>
 						<td {{produto.gettdtag}}>{{produto.descricao}}</td>
 						<td {{produto.gettdtag}}>{{produto.quantidade}}</td>
-						<td {{produto.gettdtag}}>{{produto.getpreco_compra}}</td>
-						<td {{produto.gettdtag}}>{{produto.getpreco_venda}}</td>
+						<td {{produto.gettdtag}}>{{produto.preco_compra|floatformat:2}}</td>
+						<td {{produto.gettdtag}}>{{produto.preco_venda|floatformat:2}}</td>
 						<td {{produto.gettdtag}}><a href="?editar={{produto.id}}" class="pure-button button-warning edit"><i class="fa fa-pencil"></i></a></td>
 						<td {{produto.gettdtag}}><a href="?apagar={{produto.id}}" class="pure-button button-error"><i class="fa fa-trash"></i></a></td>
 						{% endfor %}
